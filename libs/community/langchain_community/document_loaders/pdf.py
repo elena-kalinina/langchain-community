@@ -165,7 +165,7 @@ class BasePDFLoader(BaseLoader, ABC):
         """Check if the url is a presigned S3 url."""
         try:
             result = urlparse(url)
-            return bool(re.search(r"\.s3\.amazonaws\.com$", result.netloc))
+            return bool(re.search(r"\.s3(?:\.[\w-]+)?\.amazonaws\.com", result.netloc))
         except ValueError:
             return False
 
