@@ -164,8 +164,23 @@ class BasePDFLoader(BaseLoader, ABC):
     def _is_s3_presigned_url(url: str) -> bool:
         """Check if the url is a presigned S3 url."""
         try:
-            result = urlparse(url)
-            return bool(re.search(r"\.s3\.amazonaws\.com$", result.netloc))
+            # Parse the URL into its components
+            parsed_url = urlparse(url)
+
+            # Check if the domain (netloc) matches the S3 pattern.
+            s3_domain_pattern = r"(?:^|.*\.)s3(?:\.[\w-]+)?\.amazonaws\.com$"
+            is_s3_domain = bool(re.search(s3_domain_pattern, parsed_url.netloc))
+            
+            if not is_s3_domain:
+                return False
+
+            # Parse the query string into a dictionary
+            query_params = parse_qs(parsed_url.query)
+
+            # Check if the signature key exists in the query parameters.
+            # This is the definitive test for a presigned URL.
+            return 'X-Amz-Signature' in query_params
+            
         except ValueError:
             return False
 
