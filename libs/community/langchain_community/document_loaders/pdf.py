@@ -19,7 +19,7 @@ from typing import (
     Union,
     cast,
 )
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 import requests
 from langchain_core.documents import Document
